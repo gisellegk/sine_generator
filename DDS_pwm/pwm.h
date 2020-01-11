@@ -14,6 +14,9 @@ void start_pwm(void);
 void stop_pwm(void);
 
 /* Config P2.4 to output TA0.1 waveform */
- void config_pwm_gpio(void);
+void config_pwm_gpio(void);
+
+/* TA_0 IRQ handler */
+void TA0_0_IRQHandler (void);
 
 #endif

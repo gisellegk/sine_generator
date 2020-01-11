@@ -12,6 +12,10 @@ void config_pwm_timer(void){
     TIMER_A0->CTL |= TIMER_A_CTL_SSEL__SMCLK; // smclk source
     TIMER_A0->CCTL[1] |= TIMER_A_CCTLN_OUTMOD_7; // reset set mode
     TIMER_A0->CCR[0] = PERIOD; // set PWM period
+
+    TIMER_A0->CCTL[0] |= TIMER_A_CCTLN_CCIE; // enable TA0 CCR0 interrupt request
+    NVIC_EnableIRQ(TA0_0_IRQn); // Enables TA0 CCR0 in NVIC
+    __NVIC_SetPriority(TA0_0_IRQn, 2); //Sets the priority of interrupt 8 to 2
 }
 
 //* * @param uint8_t duty_cycle: 0-100, percentage of time ON */
@@ -35,6 +39,13 @@ void stop_pwm(void){
      P2->SEL1 &= ~BIT4;
      P2->SEL0 |= BIT4;
      P2->DIR |= BIT4;
+ }
+
+ void TA0_0_IRQHandler (void){
+     if(TIMER_A0->CCTL[0] & TIMER_A_CTL_IFG){ // is this if statement necessary?
+         P2OUT ^= 0b100;
+         TIMER_A0->CCTL[0] &= ~TIMER_A_CTL_IFG; //clear flag pending? i hope?
+     }
  }
 
 
