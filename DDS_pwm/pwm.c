@@ -5,19 +5,21 @@
 #define SYSTEM_CLOCK        3000000  // [Hz] default system_msp432p401r.c
 #define PWM_FREQUENCY       100000   // [Hz] PWM frequency desired
 #define CALC_PERIOD(X)      (SYSTEM_CLOCK / X) //calc # of ticks in period
-
+#define PERIOD              CALC_PERIOD(PWM_FREQUENCY)
 
 void config_pwm_timer(void){
     TIMER_A0->CTL |= TIMER_A_CTL_CLR; // clear
     TIMER_A0->CTL |= TIMER_A_CTL_SSEL__SMCLK; // smclk source
     TIMER_A0->CCTL[1] |= TIMER_A_CCTLN_OUTMOD_7; // reset set mode
+    TIMER_A0->CCR[0] = PERIOD; // set PWM period
 }
 
- //* * @param uint8_t duty_cycle: 0-100, percentage of time ON */
-void start_pwm(uint8_t duty_cycle){
-    uint8_t period = CALC_PERIOD(PWM_FREQUENCY);
-    TIMER_A0->CCR[0] = period; // overall period
-    TIMER_A0->CCR[1] = period * duty_cycle / 100; // duty cycle
+//* * @param uint8_t duty_cycle: 0-100, percentage of time ON */
+void set_duty_cycle(uint8_t duty_cycle){
+    TIMER_A0->CCR[1] = PERIOD * duty_cycle / 100; // duty cycle
+}
+
+void start_pwm(void){
     TIMER_A0->CTL |= TIMER_A_CTL_MC__UP; // UP mode
 }
 
