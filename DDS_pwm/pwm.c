@@ -1,0 +1,39 @@
+#include <msp.h>
+#include "pwm.h"
+
+
+#define SYSTEM_CLOCK        3000000  // [Hz] default system_msp432p401r.c
+#define PWM_FREQUENCY       100000   // [Hz] PWM frequency desired
+#define CALC_PERIOD(X)      (SYSTEM_CLOCK / X) //calc # of ticks in period
+
+
+void config_pwm_timer(void){
+    TIMER_A0->CTL |= TIMER_A_CTL_CLR; // clear
+    TIMER_A0->CTL |= TIMER_A_CTL_SSEL__SMCLK; // smclk source
+    TIMER_A0->CCTL[1] |= TIMER_A_CCTLN_OUTMOD_7; // reset set mode
+}
+
+ //* * @param uint8_t duty_cycle: 0-100, percentage of time ON */
+void start_pwm(uint8_t duty_cycle){
+    uint8_t period = CALC_PERIOD(PWM_FREQUENCY);
+    TIMER_A0->CCR[0] = period; // overall period
+    TIMER_A0->CCR[1] = period * duty_cycle / 100; // duty cycle
+    TIMER_A0->CTL |= TIMER_A_CTL_MC__UP; // UP mode
+}
+
+/* Stop Mode: clear all Mode Control bits, MC, in TAxCTL register */
+void stop_pwm(void){
+    TIMER_A0->CTL &= ~(TIMER_A_CTL_MC_MASK); // stop mode
+}
+
+/* Config P2.4 to output TA0.1 waveform */
+ void config_pwm_gpio(void){
+     P2->OUT &= ~BIT4;
+     //we want bit #4 to be 0, 1 in SEL1 and SEL0 respectively for primary module function
+     P2->SEL1 &= ~BIT4;
+     P2->SEL0 |= BIT4;
+     P2->DIR |= BIT4;
+ }
+
+
+
