@@ -1,0 +1,14 @@
+# CCS workspace
+/.metadata/
+/.jxbrowser-data/
+/RemoteSystemsTempFiles/
+/dvt/
+
+# CCS project
+# http://software-dl.ti.com/ccs/esd/documents/sdto_ccs_source-control.html
+*/Debug/
+*/Release/
+*/.xdchelp
+*/.config/
+*/.launches/
+*/targetConfigs/
