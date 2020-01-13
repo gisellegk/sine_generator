@@ -10,6 +10,7 @@
 void config_pwm_timer(void){
     TIMER_A0->CTL |= TIMER_A_CTL_CLR; // clear
     TIMER_A0->CTL |= TIMER_A_CTL_SSEL__SMCLK; // smclk source
+
     TIMER_A0->CCTL[1] |= TIMER_A_CCTLN_OUTMOD_7; // reset set mode
     TIMER_A0->CCR[0] = PERIOD; // set PWM period
 
@@ -42,10 +43,9 @@ void stop_pwm(void){
  }
 
  void TA0_0_IRQHandler (void){
-     if(TIMER_A0->CCTL[0] & TIMER_A_CTL_IFG){ // is this if statement necessary?
-         P2OUT ^= 0b100;
-         TIMER_A0->CCTL[0] &= ~TIMER_A_CTL_IFG; //clear flag pending? i hope?
-     }
+     TIMER_A0->CCTL[0] &= ~TIMER_A_CTL_IFG; //clear flag pending
+     P2OUT ^= 0b100;
+
  }
 
 
