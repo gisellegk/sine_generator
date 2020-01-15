@@ -2,7 +2,7 @@
 #include "pwm.h"
 
 
-#define SYSTEM_CLOCK        3000000  // [Hz] default system_msp432p401r.c
+#define SYSTEM_CLOCK        12000000  // [Hz] system_msp432p401r.c default 3Mhz. See config_clock()
 #define PWM_FREQUENCY       100000   // [Hz] PWM frequency desired
 #define CALC_PERIOD(X)      (SYSTEM_CLOCK / X) //calc # of ticks in period
 #define PERIOD              CALC_PERIOD(PWM_FREQUENCY)
@@ -10,6 +10,8 @@
 void config_pwm_timer(void){
     TIMER_A0->CTL |= TIMER_A_CTL_CLR; // clear
     TIMER_A0->CTL |= TIMER_A_CTL_SSEL__SMCLK; // smclk source
+
+    TIMER_A0->CTL |= TIMER_A_CTL_ID__4; // divide clock by 4 (set bit 7 to 1)
 
     TIMER_A0->CCTL[1] |= TIMER_A_CCTLN_OUTMOD_7; // reset set mode
     TIMER_A0->CCR[0] = PERIOD; // set PWM period
