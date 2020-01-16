@@ -23,10 +23,12 @@ void main(void)
 	// enable LEDs for debugging irq
 	P2->DIR |= (BIT2 | BIT1 | BIT0);
 
+
 	config_clock();
 	config_pwm_timer();
-	set_duty_cycle(50);
+	set_duty_cycle(0);
 	config_pwm_gpio();
+    config_sin_vars();
 	start_pwm();
 
 	while(1){

@@ -19,4 +19,6 @@ void config_pwm_gpio(void);
 /* TA_0 IRQ handler */
 void TA0_0_IRQHandler (void);
 
+void config_sin_vars();
+
 #endif
